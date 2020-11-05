@@ -3,6 +3,7 @@ import random
 
 app = Flask(__name__)
 
+
 def sort_letters(message):
     """A helper method to sort the characters of a string in alphabetical order
     and return the new string."""
@@ -14,36 +15,76 @@ def homepage():
     """A homepage with handy links for your convenience."""
     return render_template('home.html')
 
+
 @app.route('/froyo')
 def choose_froyo():
     """Shows a form to collect the user's Fro-Yo order."""
-    pass
+    return render_template('froyo_form.html')
+
 
 @app.route('/froyo_results')
 def show_froyo_results():
     """Shows the user what they ordered from the previous page."""
-    pass
+    users_froyo_flavor = request.args.get('flavor')
+    users_froyo_toppings = request.args.get('toppings')
+    list_toppings = users_froyo_toppings.split(" ")
+
+    context = {
+        'users_froyo_flavor': users_froyo_flavor,
+        'users_froyo_toppings': users_froyo_toppings,
+        'list_toppings': list_toppings
+    }
+    return render_template('froyo_results.html', **context)
+
 
 @app.route('/favorites')
 def favorites():
     """Shows the user a form to choose their favorite color, animal, and city."""
-    pass
+    return """
+    <form action="/favorites_results" method="GET">
+        What is your favorite color? <br/>
+        <input type="text" name="color"><br/>
+
+        What is your favorite animal<br/>
+        <input type="text" name="animal"><br/>
+
+        What is your favorite city<br/>
+        <input type="text" name="city"><br/>
+
+        <input type="submit" value="Submit!">
+    </form>
+    """
+
 
 @app.route('/favorites_results')
 def favorites_results():
     """Shows the user a nice message using their form results."""
-    pass
+    users_favorite_color = request.args.get('color')
+    users_favorite_animal = request.args.get('animal')
+    users_favorite_city = request.args.get('city')
+
+    return f'Wow, I didn\'t know {users_favorite_color} {users_favorite_animal} lived in {users_favorite_city}!'
+
 
 @app.route('/secret_message')
 def secret_message():
     """Shows the user a form to collect a secret message. Sends the result via
     the POST method to keep it a secret!"""
-    pass
+    return """
+    <form action="/message_results" method="POST">
+        Type the Message <br/>
+        <input type="text" name="message"><br/>
+        <input type="submit" value="Submit!">
+    </form>
+    """
+
 
 @app.route('/message_results', methods=['POST'])
 def message_results():
     """Shows the user their message, with the letters in sorted order."""
-    pass
+    users_secrect_message = request.form.get('message')
+    return f'{sort_letters(users_secrect_message)}'
+
 
 @app.route('/calculator')
 def calculator():
@@ -63,14 +104,32 @@ def calculator():
     </form>
     """
 
+
 @app.route('/calculator_results')
 def calculator_results():
     """Shows the user the result of their calculation."""
-    pass
+    users_num1 = int(request.args.get('operand1'))
+    users_num2 = int(request.args.get('operand2'))
+    users_operation = request.args.get('operation')
+
+    if users_operation == 'add':
+        users_sum = users_num1 + users_num2
+        return f'You chose to add {users_num1} and {users_num2}. Your result is: {users_sum}'
+    elif users_operation == 'subtract':
+        users_difference = users_num1 - users_num2
+        return f'You chose to subtract {users_num1} and {users_num2}. Your result is: {users_difference}'
+    elif users_operation == 'multiply':
+        users_multiply = users_num1 * users_num2
+        return f'You chose to multiply {users_num1} and {users_num2}. Your result is: {users_multiply}'
+    elif users_operation == 'divide':
+        users_quotient = users_num1 / users_num2
+        return f'You chose to divide {users_num1} and {users_num2}. Your result is: {users_quotient}'
+    else:
+        return f'Please select two numbers'
 
 
-# List of compliments to be used in the `compliments_results` route (feel free 
-# to add your own!) 
+# List of compliments to be used in the `compliments_results` route (feel free
+# to add your own!)
 # https://systemagicmotives.com/positive-adjectives.htm
 list_of_compliments = [
     'awesome',
@@ -98,10 +157,12 @@ list_of_compliments = [
     'zoetic'
 ]
 
+
 @app.route('/compliments')
 def compliments():
     """Shows the user a form to get compliments."""
     return render_template('compliments_form.html')
+
 
 @app.route('/compliments_results')
 def compliments_results():
