@@ -1,15 +1,30 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Calculator Results</title>
-    </head>
-    <body>
-        <!-- Your HTML code goes here! -->
+  <head>
+    <title>Calculator Results</title>
+  </head>
+  <body>
+    {% if operator == 'add' %}
+    <p>You chose to add {{num1}} and {{num2}}. Your result is: {{users_sum}}</p>
 
+    {% elif operator == 'subtract' %}
+    <p>
+      You chose to subtract {{num1}} and {{num2}}. Your result is:
+      {{users_difference}}
+    </p>
 
+    {% elif operator == 'multiply' %}
+    <p>
+      You chose to multiply {{num1}} and {{num2}}. Your result is:
+      {{users_multiply}}
+    </p>
 
+    {% elif operator == 'divide' %}
+    <p>
+      You chose to subtract {{num1}} and {{num2}}. Your result is:
+      {{users_quotient}}
+    </p>
 
-
-        
-    </body>
+    {% endif %}
+  </body>
 </html>

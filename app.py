@@ -89,20 +89,7 @@ def message_results():
 @app.route('/calculator')
 def calculator():
     """Shows the user a form to enter 2 numbers and an operation."""
-    return """
-    <form action="/calculator_results" method="GET">
-        Please enter 2 numbers and select an operator.<br/><br/>
-        <input type="number" name="operand1">
-        <select name="operation">
-            <option value="add">+</option>
-            <option value="subtract">-</option>
-            <option value="multiply">*</option>
-            <option value="divide">/</option>
-        </select>
-        <input type="number" name="operand2">
-        <input type="submit" value="Submit!">
-    </form>
-    """
+    return render_template('calculator_form.html')
 
 
 @app.route('/calculator_results')
@@ -112,20 +99,17 @@ def calculator_results():
     users_num2 = int(request.args.get('operand2'))
     users_operation = request.args.get('operation')
 
-    if users_operation == 'add':
-        users_sum = users_num1 + users_num2
-        return f'You chose to add {users_num1} and {users_num2}. Your result is: {users_sum}'
-    elif users_operation == 'subtract':
-        users_difference = users_num1 - users_num2
-        return f'You chose to subtract {users_num1} and {users_num2}. Your result is: {users_difference}'
-    elif users_operation == 'multiply':
-        users_multiply = users_num1 * users_num2
-        return f'You chose to multiply {users_num1} and {users_num2}. Your result is: {users_multiply}'
-    elif users_operation == 'divide':
-        users_quotient = users_num1 / users_num2
-        return f'You chose to divide {users_num1} and {users_num2}. Your result is: {users_quotient}'
-    else:
-        return f'Please select two numbers'
+    context = {
+        'num1': users_num1,
+        'num2': users_num2,
+        'operator': users_operation,
+        'users_sum': users_num1 + users_num2,
+        'users_difference': users_num1 - users_num2,
+        'users_multiply': users_num1 * users_num2,
+        'users_quotient': users_num1 / users_num2
+    }
+
+    return render_template('calculator_results.html', **context)
 
 
 # List of compliments to be used in the `compliments_results` route (feel free
